@@ -7,17 +7,23 @@ trigger:
 - main
 
 pool:
-  vmImage: windows-latest
+vmImage: 'windows-latest'
 
 variables:
-  buildConfiguration: Release
+buildConfiguration: 'Release'
 
 steps:
+
+- task: UseDotNet@2
+inputs:
+packageType: 'sdk'
+version: '8.x'
+
 - script: dotnet restore
-  displayName: Restore
+displayName: Restore dependencies
 
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: Build
+- script: dotnet build --configuration $(buildConfiguration) --no-restore
+displayName: Build solution
 
-- script: dotnet test --configuration $(buildConfiguration)
-  displayName: Run NUnit Tests
+- script: dotnet test --configuration $(buildConfiguration) --no-build --verbosity normal
+displayName: Run NUnit Tests
